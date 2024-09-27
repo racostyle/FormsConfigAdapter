@@ -12,16 +12,6 @@ This repository demonstrates how to use the `ConfigurationAdapter` class for ser
 
 The `ConfigurationAdapter` takes in a set of control handlers (`IControlHandler`) for different types of controls (e.g., `TextBox`, `ComboBox`, etc.). It traverses through all controls in a parent form or container and uses these handlers to interact with recognized controls.
 
-### Naming Conventions for Controls
-
-The `ConfigurationAdapter` assumes a specific naming convention for controls:
-- **Prefixes**:
-  - `tb`: TextBox
-  - `rtb`: RichTextBox
-  - `cbx`: CheckBox
-  - `cbb`: ComboBox
-- Example: A `TextBox` named `rtbTextBox` will be stored in the dictionary as `TextBox`, with the prefix removed.
-
 ## Installation
 
 To use the `ConfigurationAdapter`, include the `ConfigurationAdapter.cs` file and any control handlers (e.g., `Handler_TextBox.cs`) in your project.
@@ -45,6 +35,7 @@ var packedDict = _adapter.PackControls(this);
 ```
 
 This will create a dictionary where:
+
 - **Keys**: Control names without their prefix.
 - **Values**: The text or value of each control.
 
@@ -80,6 +71,7 @@ _adapter.UnpackControls(this, packedDict);
 ### Control Handlers
 
 Each control handler must implement the `IControlHandler` interface and define:
+
 - How to extract the value from the control.
 - How to assign a value to the control.
 - How to recognize whether a control matches the handler.
@@ -87,7 +79,7 @@ Each control handler must implement the `IControlHandler` interface and define:
 #### Example: TextBox Handler
 
 ```csharp
-public class Handler_TextBox : IControlHandler 
+public class Handler_TextBox : IControlHandler
 {
     public void AssignValueToControl(Control ctrl, string value)
     {
@@ -98,7 +90,7 @@ public class Handler_TextBox : IControlHandler
 
     public bool DoesMatchTo(Control ctrl) => ctrl is TextBox;
 
-    public string GetControlNameWithoutPrefix(Control ctrl) => 
+    public string GetControlNameWithoutPrefix(Control ctrl) =>
         new string(ctrl.Name.ToArray().SkipWhile(x => char.IsLower(x)).ToArray());
 }
 ```
@@ -131,16 +123,19 @@ public class Handler_CheckBox : IControlHandler
 ```csharp
 public ConfigurationAdapter(params IControlHandler[] acceptedHandlers)
 ```
+
 **Constructor**: Takes a variable number of `IControlHandler` implementations as parameters. These handlers define how the adapter should interact with various control types.
 
 ```csharp
 internal Dictionary<string, string> PackControls(Control parent)
 ```
+
 **PackControls**: Packs the recognized controls from the parent container into a `Dictionary<string, string>`, where each key is the control's name without a prefix, and the value is the control's current state or text.
 
 ```csharp
 internal void UnpackControls(Control parent, Dictionary<string, string> config)
 ```
+
 **UnpackControls**: Unpacks the dictionary values back into the controls within the parent container.
 
 ---
@@ -162,8 +157,18 @@ public interface IControlHandler
 **DoesMatchTo**: Determines if the control matches this handler (e.g., for `TextBox`, `ComboBox`).
 **GetControlNameWithoutPrefix**: Extracts the control name without its naming convention prefix.
 
+### Naming Conventions for Controls
+
+The `ConfigurationAdapter` assumes a specific naming convention for controls:
+
+- **Prefixes**:
+  - `tb`: TextBox
+  - `rtb`: RichTextBox
+  - `chb`: CheckBox
+  - `cbb`: ComboBox
+  - `rbtn`: RadioButton
+- Example: A `TextBox` named `rtbTextBox` will be stored in the dictionary as `TextBox`, with the prefix removed.
+
 ## License
 
 This project is licensed under the MIT License.
-
-

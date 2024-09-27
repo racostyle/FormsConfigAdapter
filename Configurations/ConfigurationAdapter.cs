@@ -5,7 +5,7 @@
         private readonly IControlHandler[] _acceptedHandlers;
 
         /// <summary>
-        /// naming convention prefixes: tb - textbox, rtb - RichTextBox, cbx - CheckBox, cbb - ComboBox
+        /// naming convention prefixes: tb - textbox, rtb - RichTextBox, chb - CheckBox, cbb - ComboBox, rbtn - RadioButton
         /// Example: rtbTextBox will come out form GetControlNameWithoutPrefix as TextBox
         /// </summary>
         public ConfigurationAdapter(params IControlHandler[] acceptedHandlers)
@@ -37,8 +37,9 @@
             {
                 foreach (Control control in recognized)
                 {
-                    if (cfg.Key == GetControlHandler(control).Handler.GetControlNameWithoutPrefix(control))
-                        control.Text = cfg.Value;
+                    var handler = GetControlHandler(control).Handler;
+                    if (cfg.Key == handler.GetControlNameWithoutPrefix(control))
+                        handler.AssignValueToControl(control, cfg.Value);
                 }
             }
         }
