@@ -1,4 +1,6 @@
-﻿namespace Configurations
+using System.Windows.Forms;
+
+namespace Configurations
 {
     public interface IControlHandler
     {

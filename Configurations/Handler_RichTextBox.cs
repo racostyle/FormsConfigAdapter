@@ -1,4 +1,7 @@
-﻿namespace Configurations
+using System.Linq;
+using System.Windows.Forms;
+
+namespace Configurations
 {
     public class Handler_RichTextBox : IControlHandler 
     {
@@ -7,7 +10,7 @@
             ((RichTextBox)ctrl).Text = value;
         }
         public string GetControlValue(Control ctrl) => ((RichTextBox)ctrl).Text ?? "";
-        public string GetControlNameWithoutPrefix(Control ctrl) => new string(ctrl.Name.ToArray().SkipWhile(x => char.IsLower(x)).ToArray());
+        public string GetControlNameWithoutPrefix(Control ctrl) => new string(ctrl.Name.SkipWhile(x => char.IsLower(x)).ToArray());
         public bool DoesMatchTo(Control ctrl)
         {
             if (ctrl is RichTextBox)

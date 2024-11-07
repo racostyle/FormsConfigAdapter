@@ -1,6 +1,9 @@
-﻿namespace Configurations
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace Configurations
 {
-    internal class ConfigurationAdapter
+    public class ConfigurationAdapter
     {
         private readonly IControlHandler[] _acceptedHandlers;
 
