@@ -5,6 +5,8 @@ namespace Configurations
 {
     public class ConfigurationAdapter
     {
+        public bool SavedByAdapter { get; private set; } = false;
+
         private readonly IControlHandler[] _acceptedHandlers;
 
         /// <summary>
@@ -33,6 +35,16 @@ namespace Configurations
         {
             if (config == null)
                 return;
+
+            SavedByAdapter = true;
+
+            if (parent.InvokeRequired)
+            {
+                parent.BeginInvoke((MethodInvoker)delegate ()
+                {
+                    UnpackControls(parent, config);
+                });
+            }
 
             var recognized = GetAllRecognizedControls(parent);
 
