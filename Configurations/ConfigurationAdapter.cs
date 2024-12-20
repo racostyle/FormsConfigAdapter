@@ -1,3 +1,4 @@
+using FormsUtils.Configurations;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -11,14 +12,18 @@ namespace Configurations
 
         /// <summary>
         /// naming convention prefixes: tb - textbox, rtb - RichTextBox, chb - CheckBox, cbb - ComboBox, rbtn - RadioButton
-        /// Example: rtbTextBox will come out form GetControlNameWithoutPrefix as TextBox
+        /// Example: rtbTextBox will come out from GetControlNameWithoutPrefix as TextBox
         /// </summary>
-        public ConfigurationAdapter(params IControlHandler[] acceptedHandlers)
+        public ConfigurationAdapter(bool respectNamingConvention, params IControlHandler[] acceptedHandlers)
         {
+            ControlChecker.Shared.RespectNamingConvention = respectNamingConvention;
             _acceptedHandlers = acceptedHandlers;
         }
 
-        internal Dictionary<string, string> PackControls(Control parent)
+        /// <summary>
+        /// Packs control values from the given parent control into a dictionary.
+        /// </summary>
+        public Dictionary<string, string> PackControls(Control parent)
         {
             var recognized = GetAllRecognizedControls(parent);
             var dict = new Dictionary<string, string>();
@@ -31,7 +36,10 @@ namespace Configurations
             return dict;
         }
 
-        internal void UnpackControls(Control parent, Dictionary<string, string> config)
+        /// <summary>
+        /// Unpacks and assigns values from the dictionary to controls within the given parent control.
+        /// </summary>
+        public void UnpackControls(Control parent, Dictionary<string, string> config)
         {
             if (config == null)
                 return;
@@ -53,10 +61,13 @@ namespace Configurations
                 foreach (Control control in recognized)
                 {
                     var handler = GetControlHandler(control).Handler;
-                    if (cfg.Key == handler.GetControlNameWithoutPrefix(control))
+                    var name = handler.GetControlNameWithoutPrefix(control);
+                    if (cfg.Key == name)
                         handler.AssignValueToControl(control, cfg.Value);
                 }
             }
+
+            SavedByAdapter = false;
         }
 
         private IEnumerable<Control> GetAllControls(Control parent)
